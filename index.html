@@ -81,6 +81,29 @@
     fetchPrices();
     setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت میشه
   </script>
+<h2>تعداد بازدید امروز: <span id="visitCount">0</span></h2>
 
+<script>
+  // گرفتن تاریخ امروز
+  const today = new Date().toLocaleDateString();
+
+  // کلید ذخیره‌شده در Local Storage
+  const storageKey = 'visitCount_' + today;
+
+  // خواندن مقدار فعلی یا شروع از 0
+  let visitCount = localStorage.getItem(storageKey);
+
+  if (visitCount === null) {
+    visitCount = 1; // اولین بازدید
+  } else {
+    visitCount = parseInt(visitCount) + 1; // افزایش بازدید
+  }
+
+  // ذخیره مقدار جدید
+  localStorage.setItem(storageKey, visitCount);
+
+  // نمایش تعداد بازدید
+  document.getElementById('visitCount').innerText = visitCount;
+</script>
 </body>
 </html>
