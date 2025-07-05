@@ -30,11 +30,11 @@
         <td id="goldPrice" class="price">3,000,000 تومان</td>
       </tr>
       <tr>
-        <td>دلار (تخمینی)</td>
+        <td>دلار (تقریبی)</td>
         <td id="usdPrice">در حال بارگذاری...</td>
       </tr>
       <tr>
-        <td>یورو (تخمینی)</td>
+        <td>یورو (تقریبی)</td>
         <td id="eurPrice">در حال بارگذاری...</td>
       </tr>
       <tr>
@@ -49,36 +49,37 @@
   </table>
 
   <script>
-    const tomanRate = 50000; // نرخ تقریبی دلار به تومان (قابل تغییر)
+    const tomanRate = 50000; // نرخ تقریبی دلار به تومان
 
     async function fetchPrices() {
       try {
-        // نرخ ارز
-        const response1 = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=IRR,EUR');
+        // قیمت دلار و یورو از CoinGecko
+        const response1 = await fetch('https://api.coingecko.com/api/v3/exchange_rates');
         const data1 = await response1.json();
 
-        const usdToIrr = data1.rates.IRR / 10; // تقریبی برای دلار آزاد
-        const eurToIrr = data1.rates.EUR * usdToIrr;
+        const usdPrice = data1.rates.usd.value * tomanRate;
+        const eurPrice = data1.rates.eur.value * tomanRate;
 
-        document.getElementById('usdPrice').innerText = usdToIrr.toLocaleString() + ' تومان';
-        document.getElementById('eurPrice').innerText = eurToIrr.toLocaleString() + ' تومان';
+        document.getElementById('usdPrice').innerText = usdPrice.toLocaleString() + ' تومان';
+        document.getElementById('eurPrice').innerText = eurPrice.toLocaleString() + ' تومان';
 
-        // ارز دیجیتال
+        // قیمت بیت‌کوین و اتریوم
         const response2 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
         const data2 = await response2.json();
 
-        const btcPrice = data2.bitcoin.usd * usdToIrr;
-        const ethPrice = data2.ethereum.usd * usdToIrr;
+        const btcPrice = data2.bitcoin.usd * tomanRate;
+        const ethPrice = data2.ethereum.usd * tomanRate;
 
         document.getElementById('btcPrice').innerText = btcPrice.toLocaleString() + ' تومان';
         document.getElementById('ethPrice').innerText = ethPrice.toLocaleString() + ' تومان';
+
       } catch (error) {
         console.error('خطا در دریافت قیمت‌ها', error);
       }
     }
 
     fetchPrices();
-    setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت بشه
+    setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت میشه
   </script>
 
 </body>
