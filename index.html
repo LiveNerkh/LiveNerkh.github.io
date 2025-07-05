@@ -1,13 +1,12 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LiveNerkh | قیمت لحظه‌ای</title>
   <style>
-    body { font-family: Tahoma,sans-serif; background: #f2f2f2; margin:0; color:#333 }
+    body { font-family: Tahoma, sans-serif; background: #f2f2f2; margin:0; color:#333 }
     header { background:#ffbf00; padding:15px; text-align:center; color:white; }
-    header h1 { margin:0; }
     .ticker { background:#333; color:white; padding:8px; overflow:hidden; white-space:nowrap; }
     .ticker span { display:inline-block; padding-left:100%; animation:ticker 30s linear infinite; }
     @keyframes ticker { 0% {transform:translateX(-100%);} 100% {transform:translateX(100%);} }
@@ -42,15 +41,23 @@
     </table>
   </section>
 
-  <!-- ارزهای بین‌المللی -->
-  <section><h2>ارزهای دیجیتال</h2>
-    <table>
-      <tr><td>دلار</td><td id="usdPrice">-</td></tr>
-      <tr><td>یورو</td><td id="eurPrice">-</td></tr>
+  <!-- ارزهای همسایه -->
+  <section><h2>ارزهای کشورهای همسایه</h2>
+    <table id="neighborTable">
+      <thead><tr><th>واحد</th><th>قیمت (تومان)</th></tr></thead>
+      <tbody>
+        <tr><td>AED (درهم)</td><td id="AED">-</td></tr>
+        <tr><td>AFN (افغانی)</td><td id="AFN">-</td></tr>
+        <tr><td>AZN (منات)</td><td id="AZN">-</td></tr>
+        <tr><td>TRY (لیر)</td><td id="TRY">-</td></tr>
+        <tr><td>RUB (روبل)</td><td id="RUB">-</td></tr>
+        <tr><td>JPY (ین)</td><td id="JPY">-</td></tr>
+        <tr><td>GBP (پوند)</td><td id="GBP">-</td></tr>
+      </tbody>
     </table>
   </section>
 
-  <!-- ارز دیجیتال -->
+  <!-- ارزهای دیجیتال -->
   <section><h2>رمزارزها (برحسب تتر)</h2>
     <table id="cryptoTable">
       <thead><tr><th>نام</th><th>قیمت (تتر)</th></tr></thead>
@@ -81,24 +88,28 @@
 
   async function fetchPrices() {
     try {
-      const ex = await fetch('https://api.coingecko.com/api/v3/exchange_rates');
-      const d1 = await ex.json();
-      const usd = d1.rates.usd.value * tomanRate;
-      const eur = d1.rates.eur.value * tomanRate;
-      document.getElementById('usdPrice').innerText = usd.toLocaleString()+' تومان';
-      document.getElementById('eurPrice').innerText = eur.toLocaleString()+' تومان';
-
+      // طلا و سکه
       const g = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,usd-gold&vs_currencies=usdt,usd');
       const d2 = await g.json();
-      document.getElementById('globalGoldPrice').innerText = d2['usd-gold'].usd.toLocaleString() + ' دلار';
-      document.getElementById('goldPrice').innerText = d2['usd-gold'].usd * tomanRate;
+      const usdGold = d2['usd-gold'].usd;
+      document.getElementById('globalGoldPrice').innerText = usdGold.toLocaleString() + ' $';
+      document.getElementById('goldPrice').innerText = (usdGold * tomanRate).toLocaleString() + ' تومان';
 
-      // سکه‌ها تخمینی با دلار
-      document.getElementById('emamiCoin').innerText = (usd * 10).toLocaleString()+' تومان';
-      document.getElementById('baharCoin').innerText = (usd * 9.8).toLocaleString()+' تومان';
-      document.getElementById('halfCoin').innerText = (usd * 5).toLocaleString()+' تومان';
-      document.getElementById('quarterCoin').innerText = (usd * 2.5).toLocaleString()+' تومان';
+      const usd = (await fetch('https://api.coingecko.com/api/v3/exchange_rates')).then(r=>r.json()).then(d=>d.rates.usd.value* tomanRate);
+      // سکه تخمینی
+      ['emamiCoin','baharCoin','halfCoin','quarterCoin'].forEach((id,i)=>{
+        const mult = [10,9.8,5,2.5][i];
+        usd.then(u => document.getElementById(id).innerText = (u*mult).toLocaleString()+' تومان');
+      });
 
+      // ارزهای همسایه با currency-api
+      const cur = await fetch('https://latest.currency-api.pages.dev/v1/currencies/all.json').then(r=>r.json());
+      ['AED','AFN','AZN','TRY','RUB','JPY','GBP'].forEach(code=>{
+        const val = cur[code].usd * tomanRate;
+        document.getElementById(code).innerText = val.toLocaleString()+' تومان';
+      });
+
+      // رمزارزها
       const crypt = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usdt&order=market_cap_desc&per_page=100&page=1');
       const list = await crypt.json();
       document.getElementById('cryptoBody').innerHTML = list.map(c => {
