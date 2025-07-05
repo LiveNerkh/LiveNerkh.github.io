@@ -1,59 +1,109 @@
-   <!DOCTYPE html>
-<html lang="fa">
-<head>
+  <!DOCTYPE html><html lang="fa"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LiveNerkh | قیمت آنلاین</title>
+  <title>LiveNerkh | قیمت لحظه‌ای</title>
   <style>
-    body { font-family: Tahoma, sans-serif; text-align: center; background: #f9f9f9; padding: 20px; }
-    table { margin: 20px auto; border-collapse: collapse; width: 80%; }
-    th, td { border: 1px solid #ddd; padding: 10px; }
-    th { background-color: #007bff; color: white; }
-    h1 { color: #333; }
-    .price { font-size: 1.5rem; color: goldenrod; }
+    body {
+      font-family: Tahoma, sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }header {
+  background-color: #ffbf00;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+main {
+  max-width: 800px;
+  margin: 30px auto;
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8b500;
+  color: white;
+  font-size: 1.2rem;
+}
+
+td.price {
+  font-weight: bold;
+  color: #ff6600;
+  font-size: 1.5rem;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
   </style>
-</head>
-<body>
+</head><body>  <header>
+    <h1>LiveNerkh | قیمت‌های لحظه‌ای</h1>
+  </header>  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>عنوان</th>
+          <th>قیمت</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>طلا 18 عیار</td>
+          <td id="goldPrice" class="price">3,000,000 تومان</td>
+        </tr>
+        <tr>
+          <td>دلار</td>
+          <td id="usdPrice">در حال بارگذاری...</td>
+        </tr>
+        <tr>
+          <td>یورو</td>
+          <td id="eurPrice">در حال بارگذاری...</td>
+        </tr>
+        <tr>
+          <td>بیت‌کوین</td>
+          <td id="btcPrice">در حال بارگذاری...</td>
+        </tr>
+        <tr>
+          <td>اتریوم</td>
+          <td id="ethPrice">در حال بارگذاری...</td>
+        </tr>
+      </tbody>
+    </table><h2 style="text-align: center; margin-top: 30px;">تعداد بازدید امروز: <span id="visitCountToday">0</span></h2>
+<h2 style="text-align: center;">تعداد بازدید دیروز: <span id="visitCountYesterday">0</span></h2>
 
-  <h1>LiveNerkh | قیمت‌های آنلاین</h1>
-
-  <table>
-    <thead>
-      <tr>
-        <th>عنوان</th>
-        <th>قیمت</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>طلا 18 عیار</td>
-        <td id="goldPrice" class="price">3,000,000 تومان</td>
-      </tr>
-      <tr>
-        <td>دلار (تقریبی)</td>
-        <td id="usdPrice">در حال بارگذاری...</td>
-      </tr>
-      <tr>
-        <td>یورو (تقریبی)</td>
-        <td id="eurPrice">در حال بارگذاری...</td>
-      </tr>
-      <tr>
-        <td>بیت‌کوین</td>
-        <td id="btcPrice">در حال بارگذاری...</td>
-      </tr>
-      <tr>
-        <td>اتریوم</td>
-        <td id="ethPrice">در حال بارگذاری...</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <script>
-    const tomanRate = 89000; // نرخ تقریبی دلار به تومان
+  </main>  <footer>
+    طراحی شده توسط LiveNerkh | همه حقوق محفوظ است ❤️
+  </footer>  <script>
+    const tomanRate = 90000; // نرخ تقریبی دلار به تومان
 
     async function fetchPrices() {
       try {
-        // قیمت دلار و یورو از CoinGecko
         const response1 = await fetch('https://api.coingecko.com/api/v3/exchange_rates');
         const data1 = await response1.json();
 
@@ -63,7 +113,6 @@
         document.getElementById('usdPrice').innerText = usdPrice.toLocaleString() + ' تومان';
         document.getElementById('eurPrice').innerText = eurPrice.toLocaleString() + ' تومان';
 
-        // قیمت بیت‌کوین و اتریوم
         const response2 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
         const data2 = await response2.json();
 
@@ -79,44 +128,29 @@
     }
 
     fetchPrices();
-    setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت میشه
-  </script>
+    setInterval(fetchPrices, 10000);
 
-<h2>تعداد بازدید امروز: <span id="visitCountToday">0</span></h2>
-<h2>تعداد بازدید دیروز: <span id="visitCountYesterday">0</span></h2>
+    // آمار بازدید امروز و دیروز
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
 
-<script>
-  // تاریخ امروز و دیروز
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
+    const todayKey = 'visitCount_' + today.toLocaleDateString();
+    const yesterdayKey = 'visitCount_' + yesterday.toLocaleDateString();
 
-  const todayKey = 'visitCount_' + today.toLocaleDateString();
-  const yesterdayKey = 'visitCount_' + yesterday.toLocaleDateString();
+    let todayCount = localStorage.getItem(todayKey);
+    let yesterdayCount = localStorage.getItem(yesterdayKey);
 
-  // خواندن بازدید امروز و دیروز
-  let todayCount = localStorage.getItem(todayKey);
-  let yesterdayCount = localStorage.getItem(yesterdayKey);
+    if (yesterdayCount === null) yesterdayCount = 0;
 
-  // اگر مقدار دیروز وجود نداشت صفر بزن
-  if (yesterdayCount === null) {
-    yesterdayCount = 0;
-  }
+    if (todayCount === null) {
+      todayCount = 1;
+    } else {
+      todayCount = parseInt(todayCount) + 1;
+    }
 
-  // افزایش بازدید امروز
-  if (todayCount === null) {
-    todayCount = 1;
-  } else {
-    todayCount = parseInt(todayCount) + 1;
-  }
+    localStorage.setItem(todayKey, todayCount);
 
-  // ذخیره بازدید امروز
-  localStorage.setItem(todayKey, todayCount);
-
-  // نمایش تعداد بازدیدها
-  document.getElementById('visitCountToday').innerText = todayCount;
-  document.getElementById('visitCountYesterday').innerText = yesterdayCount;
-</script>
-   
-</body>
-</html>
+    document.getElementById('visitCountToday').innerText = todayCount;
+    document.getElementById('visitCountYesterday').innerText = yesterdayCount;
+  </script></body></html>
