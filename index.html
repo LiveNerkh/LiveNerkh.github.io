@@ -81,29 +81,42 @@
     fetchPrices();
     setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت میشه
   </script>
-<h2>تعداد بازدید امروز: <span id="visitCount">0</span></h2>
+
+<h2>تعداد بازدید امروز: <span id="visitCountToday">0</span></h2>
+<h2>تعداد بازدید دیروز: <span id="visitCountYesterday">0</span></h2>
 
 <script>
-  // گرفتن تاریخ امروز
-  const today = new Date().toLocaleDateString();
+  // تاریخ امروز و دیروز
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
 
-  // کلید ذخیره‌شده در Local Storage
-  const storageKey = 'visitCount_' + today;
+  const todayKey = 'visitCount_' + today.toLocaleDateString();
+  const yesterdayKey = 'visitCount_' + yesterday.toLocaleDateString();
 
-  // خواندن مقدار فعلی یا شروع از 0
-  let visitCount = localStorage.getItem(storageKey);
+  // خواندن بازدید امروز و دیروز
+  let todayCount = localStorage.getItem(todayKey);
+  let yesterdayCount = localStorage.getItem(yesterdayKey);
 
-  if (visitCount === null) {
-    visitCount = 1; // اولین بازدید
-  } else {
-    visitCount = parseInt(visitCount) + 1; // افزایش بازدید
+  // اگر مقدار دیروز وجود نداشت صفر بزن
+  if (yesterdayCount === null) {
+    yesterdayCount = 0;
   }
 
-  // ذخیره مقدار جدید
-  localStorage.setItem(storageKey, visitCount);
+  // افزایش بازدید امروز
+  if (todayCount === null) {
+    todayCount = 1;
+  } else {
+    todayCount = parseInt(todayCount) + 1;
+  }
 
-  // نمایش تعداد بازدید
-  document.getElementById('visitCount').innerText = visitCount;
+  // ذخیره بازدید امروز
+  localStorage.setItem(todayKey, todayCount);
+
+  // نمایش تعداد بازدیدها
+  document.getElementById('visitCountToday').innerText = todayCount;
+  document.getElementById('visitCountYesterday').innerText = yesterdayCount;
 </script>
+   
 </body>
 </html>
