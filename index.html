@@ -23,7 +23,7 @@ header h1 {
 }
 
 main {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 30px auto;
   background: white;
   border-radius: 15px;
@@ -31,13 +31,26 @@ main {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+section {
+  margin-bottom: 30px;
+}
+
+h2 {
+  background-color: #f8b500;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 15px;
 }
 
 th, td {
-  padding: 15px;
+  padding: 10px;
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
@@ -51,7 +64,27 @@ th {
 td.price {
   font-weight: bold;
   color: #ff6600;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.ticker {
+  background: #333;
+  color: white;
+  padding: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ticker span {
+  display: inline-block;
+  padding-right: 50px;
+  animation: ticker 20s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
 footer {
@@ -64,43 +97,89 @@ footer {
   </style>
 </head><body>  <header>
     <h1>LiveNerkh | قیمت‌های لحظه‌ای</h1>
-  </header>  <main>
-    <table>
-      <thead>
-        <tr>
-          <th>عنوان</th>
-          <th>قیمت</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>طلا 18 عیار</td>
-          <td id="goldPrice" class="price">3,000,000 تومان</td>
-        </tr>
-        <tr>
-          <td>دلار</td>
-          <td id="usdPrice">در حال بارگذاری...</td>
-        </tr>
-        <tr>
-          <td>یورو</td>
-          <td id="eurPrice">در حال بارگذاری...</td>
-        </tr>
-        <tr>
-          <td>بیت‌کوین</td>
-          <td id="btcPrice">در حال بارگذاری...</td>
-        </tr>
-        <tr>
-          <td>اتریوم</td>
-          <td id="ethPrice">در حال بارگذاری...</td>
-        </tr>
-      </tbody>
-    </table><h2 style="text-align: center; margin-top: 30px;">تعداد بازدید امروز: <span id="visitCountToday">0</span></h2>
+  </header>  <div class="ticker">
+    <span>خبر فوری: قیمت‌ها به صورت لحظه‌ای به‌روز می‌شوند | اطلاعات به‌روز و دقیق | خبر دوم: بازار ارز دیجیتال در نوسان ...</span>
+  </div>  <main><section>
+  <h2>طلا و سکه</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>عنوان</th>
+        <th>قیمت</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>طلا 18 عیار (ایران)</td>
+        <td id="goldPrice" class="price">3,000,000 تومان</td>
+      </tr>
+      <tr>
+        <td>طلای جهانی</td>
+        <td id="globalGoldPrice">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>سکه امامی</td>
+        <td id="emamiCoin">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>سکه بهار آزادی</td>
+        <td id="baharCoin">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>نیم سکه</td>
+        <td id="halfCoin">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>ربع سکه</td>
+        <td id="quarterCoin">در حال بارگذاری...</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>ارزهای بین‌المللی</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>عنوان</th>
+        <th>قیمت</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>دلار</td>
+        <td id="usdPrice">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>یورو</td>
+        <td id="eurPrice">در حال بارگذاری...</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>ارزهای دیجیتال (برحسب تتر)</h2>
+  <table id="cryptoTable">
+    <thead>
+      <tr>
+        <th>نام</th>
+        <th>قیمت (تتر)</th>
+      </tr>
+    </thead>
+    <tbody id="cryptoBody">
+    </tbody>
+  </table>
+</section>
+
+<h2 style="text-align: center; margin-top: 30px;">تعداد بازدید امروز: <span id="visitCountToday">0</span></h2>
 <h2 style="text-align: center;">تعداد بازدید دیروز: <span id="visitCountYesterday">0</span></h2>
 
   </main>  <footer>
     طراحی شده توسط LiveNerkh | همه حقوق محفوظ است ❤️
   </footer>  <script>
-    const tomanRate = 90000; // نرخ تقریبی دلار به تومان
+    const tomanRate = 50000;
 
     async function fetchPrices() {
       try {
@@ -113,14 +192,31 @@ footer {
         document.getElementById('usdPrice').innerText = usdPrice.toLocaleString() + ' تومان';
         document.getElementById('eurPrice').innerText = eurPrice.toLocaleString() + ' تومان';
 
-        const response2 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+        const response2 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usdt');
         const data2 = await response2.json();
 
-        const btcPrice = data2.bitcoin.usd * tomanRate;
-        const ethPrice = data2.ethereum.usd * tomanRate;
+        document.getElementById('btcPrice').innerText = data2.bitcoin.usdt.toLocaleString() + ' تتر';
+        document.getElementById('ethPrice').innerText = data2.ethereum.usdt.toLocaleString() + ' تتر';
 
-        document.getElementById('btcPrice').innerText = btcPrice.toLocaleString() + ' تومان';
-        document.getElementById('ethPrice').innerText = ethPrice.toLocaleString() + ' تومان';
+        const response3 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=gold&vs_currencies=usd');
+        const data3 = await response3.json();
+
+        document.getElementById('globalGoldPrice').innerText = data3.gold.usd + ' دلار';
+
+        // قیمت سکه‌ها به صورت فرضی (در صورت داشتن API می‌توان جایگزین کرد)
+        document.getElementById('emamiCoin').innerText = (usdPrice * 10).toLocaleString() + ' تومان';
+        document.getElementById('baharCoin').innerText = (usdPrice * 9.8).toLocaleString() + ' تومان';
+        document.getElementById('halfCoin').innerText = (usdPrice * 5).toLocaleString() + ' تومان';
+        document.getElementById('quarterCoin').innerText = (usdPrice * 2.5).toLocaleString() + ' تومان';
+
+        const response4 = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usdt&order=market_cap_desc&per_page=100&page=1');
+        const data4 = await response4.json();
+
+        let cryptoHTML = '';
+        data4.forEach(coin => {
+          cryptoHTML += `<tr><td>${coin.name}</td><td>${coin.current_price.toLocaleString()} تتر</td></tr>`;
+        });
+        document.getElementById('cryptoBody').innerHTML = cryptoHTML;
 
       } catch (error) {
         console.error('خطا در دریافت قیمت‌ها', error);
@@ -130,7 +226,6 @@ footer {
     fetchPrices();
     setInterval(fetchPrices, 10000);
 
-    // آمار بازدید امروز و دیروز
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
