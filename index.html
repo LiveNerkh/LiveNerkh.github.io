@@ -1,83 +1,85 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="LiveNerkh | قیمت لحظه‌ای دلار، طلا، سکه و ارز دیجیتال" />
-<title>LiveNerkh | قیمت لحظه‌ای دلار، طلا، سکه و ارز دیجیتال</title>
-<link rel="stylesheet" href="css/styles.css" />
-<style>
-  /* استایل اضافی برای قیمت طلا */
-  #goldPrice {
-    font-weight: bold;
-    color: goldenrod;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiveNerkh | قیمت آنلاین</title>
+  <style>
+    body { font-family: Tahoma, sans-serif; text-align: center; background: #f9f9f9; padding: 20px; }
+    table { margin: 20px auto; border-collapse: collapse; width: 80%; }
+    th, td { border: 1px solid #ddd; padding: 10px; }
+    th { background-color: #007bff; color: white; }
+    h1 { color: #333; }
+    .price { font-size: 1.5rem; color: goldenrod; }
+  </style>
 </head>
 <body>
-<header>
-    <h1>LiveNerkh</h1>
-    <nav>
-        <a href="#">دلار</a>
-        <a href="#">طلا</a>
-        <a href="#">سکه</a>
-        <a href="#">ارز دیجیتال</a>
-        <a href="#">اخبار</a>
-    </nav>
-</header>
 
-<section class="banner">
-    <h2>قیمت لحظه‌ای بازار آزاد و صرافی</h2>
-</section>
+  <h1>LiveNerkh | قیمت‌های آنلاین</h1>
 
-<section class="prices">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>عنوان</th>
-                <th>قیمت</th>
-                <th>تغییر</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>طلا 18 عیار</td>
-                <td id="goldPrice">در حال بارگذاری...</td>
-                <td>—</td>
-            </tr>
-            <tr>
-                <td>دلار آزاد</td>
-                <td>50,000 تومان</td>
-                <td class="price-up">+200</td>
-            </tr>
-            <tr>
-                <td>بیت‌کوین</td>
-                <td>1,600,000,000 تومان</td>
-                <td class="price-up">+50,000,000</td>
-            </tr>
-        </tbody>
-    </table>
-</section>
+  <table>
+    <thead>
+      <tr>
+        <th>عنوان</th>
+        <th>قیمت</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>طلا 18 عیار</td>
+        <td id="goldPrice" class="price">3,000,000 تومان</td>
+      </tr>
+      <tr>
+        <td>دلار (تخمینی)</td>
+        <td id="usdPrice">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>یورو (تخمینی)</td>
+        <td id="eurPrice">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>بیت‌کوین</td>
+        <td id="btcPrice">در حال بارگذاری...</td>
+      </tr>
+      <tr>
+        <td>اتریوم</td>
+        <td id="ethPrice">در حال بارگذاری...</td>
+      </tr>
+    </tbody>
+  </table>
 
-<footer>
-    <p>© 2025 LiveNerkh | تمامی حقوق محفوظ است.</p>
-</footer>
+  <script>
+    const tomanRate = 50000; // نرخ تقریبی دلار به تومان (قابل تغییر)
 
-<script>
-async function fetchGoldPrice() {
-  try {
-    const response = await fetch('https://api.navasan.tech/v1/gold');
-    const data = await response.json();
-    const price = data.price;
-    document.getElementById('goldPrice').textContent = price.toLocaleString() + ' تومان';
-  } catch (error) {
-    document.getElementById('goldPrice').textContent = 'خطا در دریافت قیمت';
-  }
-}
+    async function fetchPrices() {
+      try {
+        // نرخ ارز
+        const response1 = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=IRR,EUR');
+        const data1 = await response1.json();
 
-fetchGoldPrice();
-setInterval(fetchGoldPrice, 10000);
-</script>
+        const usdToIrr = data1.rates.IRR / 10; // تقریبی برای دلار آزاد
+        const eurToIrr = data1.rates.EUR * usdToIrr;
+
+        document.getElementById('usdPrice').innerText = usdToIrr.toLocaleString() + ' تومان';
+        document.getElementById('eurPrice').innerText = eurToIrr.toLocaleString() + ' تومان';
+
+        // ارز دیجیتال
+        const response2 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+        const data2 = await response2.json();
+
+        const btcPrice = data2.bitcoin.usd * usdToIrr;
+        const ethPrice = data2.ethereum.usd * usdToIrr;
+
+        document.getElementById('btcPrice').innerText = btcPrice.toLocaleString() + ' تومان';
+        document.getElementById('ethPrice').innerText = ethPrice.toLocaleString() + ' تومان';
+      } catch (error) {
+        console.error('خطا در دریافت قیمت‌ها', error);
+      }
+    }
+
+    fetchPrices();
+    setInterval(fetchPrices, 10000); // هر 10 ثانیه آپدیت بشه
+  </script>
 
 </body>
 </html>
