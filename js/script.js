@@ -1,7 +1,6 @@
 
 // 📄 js/script.js
-const apiURL = 'https://api.tgju.online/v1/telegram';
-
+const apiURL = 'https://corsproxy.io/?https://opensheet.elk.sh/1J1A6X_cdycWgEjQtuh63EmZfNHuhPR_6JQyy9fR7aak/Sheet1';
 async function loadPrices() {
     try {
         const response = await fetch(apiURL);
