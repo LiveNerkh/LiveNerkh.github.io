@@ -1,12 +1,19 @@
-     
-<!-- 📄 index.html -->
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Nerkh - صفحه اصلی</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Live Nerkh - قیمت آنلاین</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background-color: #f0f2f5; color: #333; text-align: center; padding: 20px; direction: rtl; }
+        h1 { color: #2c3e50; font-size: 32px; margin-bottom: 20px; }
+        ul { list-style: none; padding: 0; max-width: 400px; margin: 0 auto; text-align: right; }
+        li { background-color: #fff; margin: 8px 0; padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 18px; }
+        .ticker { background-color: #ffd700; padding: 10px; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: scroll 15s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .footer { margin-top: 40px; font-size: 14px; color: #777; }
+    </style>
 </head>
 <body>
     <h1>قیمت‌های آنلاین لحظه‌ای</h1>
@@ -17,14 +24,35 @@
 
     <ul id="prices"></ul>
 
-    <nav>
-        <a href="pages/news.html">اخبار</a> | 
-        <a href="pages/about.html">درباره ما</a> | 
-        <a href="contact.html">تماس با ما</a>
-    </nav>
-
     <div class="footer">بروزرسانی خودکار هر 60 ثانیه</div>
 
-    <script src="js/script.js"></script>
+    <script>
+        const apiURL = 'https://opensheet.elk.sh/1J1A6X_cdycWgEjQtuh63EmZfNHuhPR_6JQyy9fR7aak/Sheet1';
+
+        async function loadPrices() {
+            try {
+                const response = await fetch(apiURL);
+                const json = await response.json();
+
+                let priceList = '';
+                let tickerText = '';
+
+                json.forEach(item => {
+                    priceList += `<li>${item.name}: ${item.price}</li>`;
+                    tickerText += `${item.name}: ${item.price} | `;
+                });
+
+                document.getElementById('prices').innerHTML = priceList;
+                document.getElementById('ticker-content').innerText = tickerText;
+
+            } catch (e) {
+                console.error('خطا در دریافت قیمت‌ها:', e);
+                document.getElementById('ticker-content').innerText = 'خطا در دریافت قیمت‌ها!';
+            }
+        }
+
+        loadPrices();
+        setInterval(loadPrices, 60000);
+    </script>
 </body>
-</html> 
+</html>
